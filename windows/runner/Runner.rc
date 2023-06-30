@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "flash_chat" "\0"
+            VALUE "FileDescription", "Flash Chat" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "flash_chat" "\0"
+            VALUE "InternalName", "Flash Chat" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
             VALUE "OriginalFilename", "flash_chat.exe" "\0"
-            VALUE "ProductName", "flash_chat" "\0"
+            VALUE "ProductName", "Flash Chat" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
