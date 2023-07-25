@@ -7,31 +7,27 @@ import '../components/rounded_button.dart';
 class WelcomeScreen extends StatefulWidget {
   static const String id = 'WelcomeScreen';
 
+  const WelcomeScreen({super.key});
+
   @override
-  _WelcomeScreenState createState() => _WelcomeScreenState();
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen>
     with SingleTickerProviderStateMixin {
-  // or use TickerProviderStateMixin if we have to animate only one thing.
   late AnimationController controller;
   late Animation animationColor;
   late Animation animation;
-  // ColorTween animation; //
 
   @override
   void initState() {
     super.initState();
-
     controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 2),
-      // upperBound: 70,
+      duration: const Duration(seconds: 2),
     );
 
     animation = CurvedAnimation(parent: controller, curve: Curves.decelerate);
-    // upperBound: cannot be more than 1 when using CurvedAnimation
-
     animationColor = ColorTween(begin: Colors.blueGrey, end: Colors.white)
         .animate(controller);
 
@@ -49,6 +45,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     });
   }
 
+  @override
   void dispose() {
     super.dispose();
     controller.dispose();
@@ -57,35 +54,31 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: animationColor.value,
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Row(
               children: <Widget>[
-                // Here Hero widget is animating the pic below from one screen to another screen.
-                // This is the starting point of Hero Widget.
                 Hero(
                   tag: 'logo',
-                  child: Container(
-                    child: Image.asset('images/logo.png'),
+                  child: SizedBox(
                     height: animation.value * 70,
+                    child: Image.asset('assets/images/logo.png'),
                   ),
                 ),
-                Text(
+                const Text(
                   'Flash Chat',
                   style: TextStyle(
-                    color: Colors.black,
                     fontSize: 40.0,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 48.0,
             ),
             RoundedButton(
@@ -93,14 +86,14 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 Navigator.pushNamed(context, LoginScreen.id);
               },
               color: Colors.lightBlueAccent,
-              ButtonText: 'Log in',
+              buttonText: 'Log in',
             ),
             RoundedButton(
               onTap: () {
                 Navigator.pushNamed(context, RegistrationScreen.id);
               },
               color: Colors.blueAccent,
-              ButtonText: 'Register',
+              buttonText: 'Register',
             ),
           ],
         ),

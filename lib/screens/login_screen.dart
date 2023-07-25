@@ -1,15 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flash_chat/components/storage.dart';
+import 'package:flash_chat/screens/chat_screen.dart';
+import 'package:flash_chat/screens/reset_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import '../components/rounded_button.dart';
 import '../constants.dart';
-import 'chat_screen.dart';
+import '../main.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'LoginScreen';
+
+  const LoginScreen({super.key});
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
@@ -17,57 +22,74 @@ class _LoginScreenState extends State<LoginScreen> {
   late String email;
   late String password;
   String error = '';
-  String newError = '';
+  String? newError;
   bool showSpinner = false;
   bool showPassword = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text('Log In'),
+      ),
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // This is the ending point of the Hero Widget.
               Flexible(
                 child: Hero(
                   tag: 'logo',
-                  child: Container(
+                  child: SizedBox(
                     height: 200.0,
-                    child: Image.asset('images/logo.png'),
+                    child: Image.asset('assets/images/logo.png'),
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 48.0,
               ),
               TextField(
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.emailAddress,
                 onChanged: (value) {
-                  //Do something with the user input.
                   email = value;
                 },
-                decoration:
-                    kTextFieldDecoration.copyWith(hintText: 'Enter your email'),
+                style: TextStyle(
+                    color: themeDataDark == true
+                        ? Colors.blue[400]
+                        : Colors.blue[600]),
+                decoration: kTextFieldDecoration.copyWith(
+                  hintText: 'Enter your email',
+                  hintStyle: TextStyle(
+                      color: themeDataDark == true
+                          ? Colors.grey[400]
+                          : Colors.grey[600]),
+                ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8.0,
               ),
               TextField(
                 textAlign: TextAlign.center,
                 obscureText: showPassword,
                 onChanged: (value) {
-                  //Do something with the user input.
                   password = value;
                 },
+                style: TextStyle(
+                    color: themeDataDark == true
+                        ? Colors.blue[400]
+                        : Colors.blue[600]),
                 decoration: kTextFieldDecoration.copyWith(
-                    hintText: 'Enter your password'),
+                  hintText: 'Enter your password',
+                  hintStyle: TextStyle(
+                      color: themeDataDark == true
+                          ? Colors.grey[400]
+                          : Colors.grey[600]),
+                ),
               ),
               TextButton(
                 onPressed: () {
@@ -81,10 +103,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     });
                   }
                 },
-                child: Text('Show password'),
+                child: const Text('Show password'),
               ),
-              SizedBox(
-                height: 10.0,
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, ResetScreen.id);
+                },
+                child: const Text('Forgot password?'),
+              ),
+              const SizedBox(
+                height: 12.0,
               ),
               RoundedButton(
                 onTap: () async {
@@ -92,12 +120,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     showSpinner = true;
                   });
                   try {
+                    final navigator = Navigator.of(context);
                     await _auth.signInWithEmailAndPassword(
                         email: email, password: password);
-                    // final SharedPreferences prefs =
-                    //     await SharedPreferences.getInstance();
-                    // await prefs.setString('email', email);
-                    Navigator.pushNamed(context, ChatScreen.id);
+                    InternalStorage().setValue('user', email);
+                    navigator.pushNamedAndRemoveUntil(
+                        ChatScreen.id, (Route<dynamic> route) => false);
                     setState(() {
                       showSpinner = false;
                     });
@@ -112,12 +140,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   }
                 },
                 color: Colors.lightBlueAccent,
-                ButtonText: 'Log in',
+                buttonText: 'Log in',
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               Center(
                   child: Text(
-                newError,
+                newError == null ? '' : '$newError',
                 style: kErrorMessage,
               )),
             ],
